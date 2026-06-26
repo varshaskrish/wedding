@@ -214,6 +214,174 @@
     .page { padding: 0 8px 40px; }
     .site-header { padding: 32px 8px 24px; }
   }
+
+  /* ====================== Daily Wordle ====================== */
+  :root {
+    --wdl-gold: #c9a45c;
+    --wdl-gold-deep: #a9842f;
+  }
+
+  .wdl-wrap { width: 100%; max-width: 360px; display: flex; flex-direction: column; align-items: center; }
+
+  .wdl-card {
+    width: 100%;
+    max-width: 560px;
+    background: var(--warm-white);
+    border-radius: 18px;
+    border: 0.5px solid var(--border-strong);
+    box-shadow: 0 2px 16px rgba(74,107,78,0.06);
+    padding: 20px 16px 26px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 28px;
+  }
+
+  .wdl-toolbar { width: 100%; max-width: 320px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .wdl-iconbtn {
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 0.5px solid var(--border-strong);
+    background: var(--warm-white);
+    color: var(--sage-dark);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .wdl-iconbtn:hover { background: var(--sage); color: #fff; }
+  .wdl-iconbtn:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+
+  .wdl-day-label { font-size: 11.5px; color: var(--muted); letter-spacing: 0.04em; text-align: center; }
+  .wdl-day-label strong { color: var(--sage-dark); font-weight: 500; }
+
+  #wdl-board { display: grid; grid-template-rows: repeat(6, 1fr); gap: 7px; margin-bottom: 18px; width: 100%; max-width: 290px; }
+  .wdl-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; }
+  .wdl-tile {
+    aspect-ratio: 1;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 6px;
+    background: var(--cream);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: 24px;
+    text-transform: uppercase;
+    color: var(--ink);
+    transition: transform 0.12s ease, border-color 0.12s ease;
+  }
+  .wdl-tile.filled { border-color: var(--sage); }
+  .wdl-tile.pop { transform: scale(1.06); }
+  .wdl-tile.flip { animation: wdl-flip 0.55s ease forwards; }
+  @keyframes wdl-flip {
+    0% { transform: rotateX(0deg); }
+    50% { transform: rotateX(90deg); }
+    51% { transform: rotateX(90deg); }
+    100% { transform: rotateX(0deg); }
+  }
+  .wdl-tile.correct { background: var(--sage-dark); border-color: var(--sage-dark); color: #fff; }
+  .wdl-tile.present { background: var(--wdl-gold); border-color: var(--wdl-gold); color: #fff; }
+  .wdl-tile.absent { background: #d9d6cd; border-color: #d9d6cd; color: var(--muted); }
+  .wdl-tile.shake { animation: wdl-shake 0.42s ease; }
+  @keyframes wdl-shake {
+    10%, 90% { transform: translateX(-1px); }
+    20%, 80% { transform: translateX(2px); }
+    30%, 50%, 70% { transform: translateX(-4px); }
+    40%, 60% { transform: translateX(4px); }
+  }
+
+  #wdl-toast {
+    position: fixed; top: 18px; left: 50%;
+    transform: translateX(-50%) translateY(-12px);
+    background: var(--ink); color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; letter-spacing: 0.02em;
+    padding: 9px 18px; border-radius: 999px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 50;
+  }
+  #wdl-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  #wdl-keyboard { width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 7px; }
+  .wdl-krow { display: flex; justify-content: center; gap: 6px; }
+  .wdl-key {
+    flex: 1; min-width: 0; max-width: 36px; height: 46px;
+    border: none; border-radius: 5px;
+    background: var(--sage-light);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 12.5px;
+    text-transform: uppercase;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .wdl-key:active { transform: translateY(1px); }
+  .wdl-key.wide { max-width: 54px; font-size: 10.5px; letter-spacing: 0.03em; }
+  .wdl-key.correct { background: var(--sage-dark); color: #fff; }
+  .wdl-key.present { background: var(--wdl-gold); color: #fff; }
+  .wdl-key.absent { background: #b9b6ac; color: #fff; }
+  .wdl-key:focus-visible { outline: 2px solid var(--sage-dark); outline-offset: 2px; }
+
+  .wdl-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,26,24,0.45);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100; opacity: 0; pointer-events: none;
+    transition: opacity 0.2s ease; padding: 20px;
+  }
+  .wdl-overlay.show { opacity: 1; pointer-events: auto; }
+  .wdl-modal {
+    background: var(--cream);
+    border: 0.5px solid var(--border-strong);
+    border-radius: 14px;
+    padding: 26px 24px 22px;
+    max-width: 320px; width: 100%;
+    text-align: center;
+    box-shadow: 0 2px 16px rgba(74,107,78,0.10);
+    position: relative;
+  }
+  .wdl-modal h2 { font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 24px; margin: 0 0 6px; color: var(--ink); }
+  .wdl-modal p { font-size: 13px; color: var(--muted); line-height: 1.55; margin: 0 0 4px; font-weight: 300; }
+  .wdl-modal .wdl-answer { font-family: 'Cormorant Garamond', serif; font-weight: 500; letter-spacing: 0.06em; color: var(--sage-dark); font-size: 19px; margin: 10px 0 16px; }
+  .wdl-modal-instructions { text-align: left; }
+  .wdl-legend { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--muted); margin: 8px 0; }
+  .wdl-legend .wdl-mini { width: 22px; height: 22px; border-radius: 4px; flex: none; }
+  .wdl-close-x { position: absolute; top: 12px; right: 14px; background: none; border: none; font-size: 17px; color: var(--muted); cursor: pointer; line-height: 1; }
+
+  .wdl-btn-row { display: flex; gap: 10px; justify-content: center; margin-top: 6px; }
+  .wdl-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    border: none; border-radius: 20px;
+    padding: 10px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500; font-size: 12.5px; letter-spacing: 0.03em;
+    cursor: pointer;
+    background: var(--sage);
+    color: #fff;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+  .wdl-btn:hover { background: var(--sage-dark); }
+  .wdl-btn:active { transform: scale(0.97); }
+  .wdl-btn.ghost { background: transparent; color: var(--muted); border: 0.5px solid var(--border-strong); }
+  .wdl-btn.ghost:hover { background: var(--sage-light); color: var(--sage-dark); }
+
+  .wdl-petal {
+    position: fixed; top: -24px; z-index: 120; pointer-events: none;
+    font-size: 18px; animation-name: wdl-fall; animation-timing-function: linear; animation-fill-mode: forwards;
+  }
+  @keyframes wdl-fall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(360deg); opacity: 0.9; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wdl-tile.flip, .wdl-tile.shake, .wdl-petal { animation: none !important; }
+  }
 </style>
 </head>
 <body>
@@ -234,6 +402,7 @@
     <button class="tab-btn active" id="tab-btn-weekend" onclick="showTab('weekend')">The Weekend</button>
     <button class="tab-btn" id="tab-btn-things" onclick="showTab('things')">Things to Do</button>
     <button class="tab-btn" id="tab-btn-goodtoknow" onclick="showTab('goodtoknow')">Good to Know</button>
+    <button class="tab-btn" id="tab-btn-wordle" onclick="showTab('wordle')">Daily Wordle</button>
   </nav>
 
   <div class="tab-panel active" id="tab-weekend">
@@ -281,7 +450,7 @@
         <div class="event-venue">Cottontail — <a href="https://www.google.com/maps/search/?api=1&query=47.61473730,-122.34379600&query_place_id=ChIJIa6ZpVsVkFQRVhCXR6B-dz4" target="_blank">2219 4th Avenue, Seattle, WA</a></div>
         <div class="event-dress">Comfy and casual · 21+ only</div>
         <div class="event-desc">Still ready to sing and dance? Join us at our favorite speakeasy in Seattle!</div>
-        <div class="transit-box"><span class="transit-icon">🚶</span><strong>Walkable!</strong> Cottontail is about a 5–10 min walk from both The Westin and Hotel Five — no need for a ride. Note: the wedding shuttle does not run to the after party.</div>
+        <div class="transit-box"><span class="transit-icon">🚶</span><strong>Walkable!</strong> Cottontail is about a 5 min walk from both The Westin and Hotel Five — no need for a ride. Note: the wedding shuttle does not run to the after party.</div>
       </div>
     </div>
 
@@ -298,7 +467,7 @@
         <div class="event-venue">Golden Gardens Bathhouse — <a href="https://www.google.com/maps/search/?api=1&query=47.69178400,-122.40398270&query_place_id=ChIJLYQD1bsXkFQRe-zhTUI8eQg" target="_blank">8498 Seaview Pl NW, Seattle, WA</a></div>
         <div class="event-dress">Casual — layers &amp; outdoor shoes, swimsuits welcome</div>
         <div class="event-desc">A relaxed farewell brunch at Golden Gardens Park along the shores of Puget Sound.</div>
-        <div class="transit-box"><span class="transit-icon">🚗</span><strong>Driving/rideshare:</strong> ~20 min drive or rideshare from either hotel — no wedding shuttle on Sunday. Parking at the park is free, but spots can be hard to find on a sunny Sunday afternoon, so plan extra time or consider rideshare.<br><br><span class="transit-icon">🚌</span><strong>Public transit option:</strong> Hop on the <strong>RapidRide D Line</strong> heading north to NW Market St &amp; 15th Ave NW in Ballard, then transfer to the new <a href="https://sdotblog.seattle.gov/2026/06/22/golden-gardens-direct/" target="_blank">Golden Gardens Direct</a> shuttle, running this summer only (June 27 – Aug 30) every 30 min from 11 AM–9 PM, straight to the park. $3 fare, ORCA card, tap-to-pay, or exact change accepted. A fun, car-free way to get there if you have the time!</div>
+        <div class="transit-box"><span class="transit-icon">🚗</span><strong>Driving/rideshare:</strong> ~20 min drive or rideshare from either hotel. Parking at the park is free, but spots can be hard to find on a sunny Sunday afternoon, so plan extra time or consider rideshare.<br><br><span class="transit-icon">🚌</span><strong>Public transit option:</strong> Hop on the <strong>RapidRide D Line</strong> heading north to NW Market St &amp; 15th Ave NW in Ballard, then transfer to the new <a href="https://sdotblog.seattle.gov/2026/06/22/golden-gardens-direct/" target="_blank">Golden Gardens Direct</a> shuttle, running this summer only (June 27 – Aug 30) every 30 min from 11 AM–9 PM, straight to the park. $3 fare, ORCA card, tap-to-pay, or exact change accepted. A fun, car-free way to get there if you have the time!</div>
       </div>
     </div>
 
@@ -461,11 +630,59 @@
       </div>
       <div class="event-block" style="border-bottom:none">
         <div class="event-top"><div class="event-name">Sunday Checkout &amp; Luggage</div></div>
-        <div class="event-desc">Standard hotel checkout is typically 11 AM. If you're heading to brunch before a later flight, ask the front desk about holding your luggage so you don't have to lug it to Golden Gardens.</div>
+        <div class="event-desc">If you're heading to brunch before a later flight, ask the front desk about holding your luggage so you don't have to lug it to Golden Gardens.</div>
       </div>
     </div>
   </div>
 
+  </div>
+
+  <div class="tab-panel" id="tab-wordle">
+
+  <p class="section-label">Daily Wordle</p>
+
+  <div class="wdl-wrap">
+    <div class="wdl-card">
+      <div class="wdl-toolbar">
+        <button class="wdl-iconbtn" id="wdl-helpBtn" aria-label="How to play">?</button>
+        <div class="wdl-day-label" id="wdl-dayLabel"></div>
+        <button class="wdl-iconbtn" id="wdl-statsBtn" aria-label="Result">♥</button>
+      </div>
+
+      <div id="wdl-board"></div>
+      <div id="wdl-keyboard"></div>
+    </div>
+    <p style="font-size:12px; color:var(--muted); font-weight:300; text-align:center; max-width:320px; margin-top:-10px;">A new word unlocks each day — come back tomorrow for another!</p>
+  </div>
+
+  </div>
+
+  <div id="wdl-toast"></div>
+
+  <div class="wdl-overlay" id="wdl-helpOverlay">
+    <div class="wdl-modal wdl-modal-instructions">
+      <button class="wdl-close-x" data-wdl-close="wdl-helpOverlay" aria-label="Close">✕</button>
+      <h2 style="text-align:center;">How to Play</h2>
+      <p>Guess the wedding-weekend word in 6 tries. Each guess must be a real 5-letter word. Press Enter to submit.</p>
+      <div class="wdl-legend"><div class="wdl-mini" style="background:var(--sage-dark);"></div> Right letter, right spot</div>
+      <div class="wdl-legend"><div class="wdl-mini" style="background:var(--wdl-gold);"></div> Right letter, wrong spot</div>
+      <div class="wdl-legend"><div class="wdl-mini" style="background:#d9d6cd;"></div> Not in the word</div>
+      <p style="margin-top:14px;">A new word unlocks every day of the weekend — come back tomorrow!</p>
+      <div class="wdl-btn-row"><button class="wdl-btn" data-wdl-close="wdl-helpOverlay">Got it</button></div>
+    </div>
+  </div>
+
+  <div class="wdl-overlay" id="wdl-resultOverlay">
+    <div class="wdl-modal">
+      <button class="wdl-close-x" data-wdl-close="wdl-resultOverlay" aria-label="Close">✕</button>
+      <h2 id="wdl-resultTitle">Congratulations!</h2>
+      <p id="wdl-resultSub">You guessed today's word.</p>
+      <div class="wdl-answer" id="wdl-resultWord"></div>
+      <div class="wdl-btn-row">
+        <button class="wdl-btn" id="wdl-shareBtn">Share Result</button>
+        <button class="wdl-btn ghost" data-wdl-close="wdl-resultOverlay">Close</button>
+      </div>
+    </div>
   </div>
 
   <footer class="site-footer">
@@ -479,14 +696,370 @@ function showTab(name) {
   document.getElementById('tab-weekend').classList.toggle('active', name === 'weekend');
   document.getElementById('tab-things').classList.toggle('active', name === 'things');
   document.getElementById('tab-goodtoknow').classList.toggle('active', name === 'goodtoknow');
+  document.getElementById('tab-wordle').classList.toggle('active', name === 'wordle');
   document.getElementById('tab-btn-weekend').classList.toggle('active', name === 'weekend');
   document.getElementById('tab-btn-things').classList.toggle('active', name === 'things');
   document.getElementById('tab-btn-goodtoknow').classList.toggle('active', name === 'goodtoknow');
+  document.getElementById('tab-btn-wordle').classList.toggle('active', name === 'wordle');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }function jumpTo(id) {
   const el = document.getElementById(id);
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+</script>
+
+<script>
+/* ============================================================
+   DAILY WORDLE — CONFIG
+   ============================================================
+   THIS IS THE ONLY SECTION YOU NEED TO TOUCH TO CHANGE WORDS.
+
+   Add one line per day, using the format:
+     "YYYY-MM-DD": "WORD",
+
+   - The date is whatever day the guest opens the page (their
+     local date), so just use the date of each wedding event.
+   - The word must be exactly 5 letters, A-Z only (no spaces,
+     no apostrophes). Lowercase or uppercase both work below.
+   - If today's date isn't listed, DEFAULT_WORD is used instead,
+     so the tab always has *something* to guess, even before
+     the weekend starts.
+   ============================================================ */
+
+const WDL_WORDS_BY_DATE = {
+  "2026-07-17": "HAPPY",   // Varsha's Bday!
+  "2026-07-17": "BLOOM",   // 2 weeks out - countdown begins
+  "2026-07-18": "GUEST",
+  "2026-07-19": "PETAL",
+  "2026-07-20": "CHARM",
+  "2026-07-21": "SPARK",
+  "2026-07-22": "ADORE",
+  "2026-07-23": "GLEAM",
+  "2026-07-24": "DANCE",   // 1 week out
+  "2026-07-25": "HEART",
+  "2026-07-26": "READY",
+  "2026-07-27": "TOAST",
+  "2026-07-28": "AISLE",
+  "2026-07-29": "BLISS",
+  "2026-07-30": "KNOTS",   // the night before
+  "2026-07-31": "BITES",   // Friday  - Welcome Event, local + Indian bites
+  "2026-08-01": "RINGS",   // Saturday - Ceremony & Reception
+  "2026-08-02": "WAVES",   // Sunday - Farewell Brunch at Golden Gardens
+};
+
+const WDL_DEFAULT_WORD = "UNION";
+
+// Optional: friendly names for each date, shown above the board.
+const WDL_DAY_NAMES = {
+  "2026-07-17": "Happy Birthday, Varsha!",
+  "2026-07-17": "2 Weeks to Go",
+  "2026-07-18": "13 Days to Go",
+  "2026-07-19": "12 Days to Go",
+  "2026-07-20": "11 Days to Go",
+  "2026-07-21": "10 Days to Go",
+  "2026-07-22": "9 Days to Go",
+  "2026-07-23": "8 Days to Go",
+  "2026-07-24": "1 Week to Go",
+  "2026-07-25": "6 Days to Go",
+  "2026-07-26": "5 Days to Go",
+  "2026-07-27": "4 Days to Go",
+  "2026-07-28": "3 Days to Go",
+  "2026-07-29": "2 Days to Go",
+  "2026-07-30": "Tomorrow!",
+  "2026-07-31": "Friday — Welcome Event",
+  "2026-08-01": "Saturday — Ceremony & Reception",
+  "2026-08-02": "Sunday — Farewell Brunch",
+};
+
+/* ============================================================
+   END OF CONFIG — the rest of this file is the game engine.
+   You shouldn't need to edit anything below this line.
+   ============================================================ */
+
+(function(){
+
+  function pad(n){ return n < 10 ? "0"+n : ""+n; }
+  function todayKey(d){
+    return d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate());
+  }
+
+  const params = new URLSearchParams(location.search);
+  const overrideDate = params.get('wdl_date');
+  const overrideWord = params.get('wdl_word');
+
+  const now = overrideDate ? new Date(overrideDate + "T00:00:00") : new Date();
+  const dateKey = overrideDate || todayKey(now);
+
+  let rawWord = overrideWord || WDL_WORDS_BY_DATE[dateKey] || WDL_DEFAULT_WORD;
+  if (!/^[A-Za-z]{5}$/.test(rawWord)) {
+    console.warn("Daily Wordle: entry for", dateKey, "isn't exactly 5 letters — falling back to WDL_DEFAULT_WORD.");
+    rawWord = WDL_DEFAULT_WORD;
+  }
+  const ANSWER = rawWord.toUpperCase();
+  const dayName = WDL_DAY_NAMES[dateKey] || dateKey;
+  document.getElementById('wdl-dayLabel').innerHTML = "<strong>" + dayName + "</strong>";
+
+  const STORAGE_KEY = "weddingWordle:" + dateKey;
+  const MAX_GUESSES = 6;
+  const WORD_LEN = 5;
+
+  let state = loadState();
+  function loadState(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    }catch(e){}
+    return { guesses: [], current: "", status: "playing" }; // playing | won | lost
+  }
+  function saveState(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+  }
+
+  const board = document.getElementById('wdl-board');
+  const rows = [];
+  for (let r=0; r<MAX_GUESSES; r++){
+    const rowEl = document.createElement('div');
+    rowEl.className = 'wdl-row';
+    const tiles = [];
+    for (let c=0; c<WORD_LEN; c++){
+      const tile = document.createElement('div');
+      tile.className = 'wdl-tile';
+      rowEl.appendChild(tile);
+      tiles.push(tile);
+    }
+    board.appendChild(rowEl);
+    rows.push(tiles);
+  }
+
+  const KB_ROWS = [
+    ["Q","W","E","R","T","Y","U","I","O","P"],
+    ["A","S","D","F","G","H","J","K","L"],
+    ["ENTER","Z","X","C","V","B","N","M","BACK"]
+  ];
+  const keyboard = document.getElementById('wdl-keyboard');
+  const keyEls = {};
+  KB_ROWS.forEach(rowKeys => {
+    const krow = document.createElement('div');
+    krow.className = 'wdl-krow';
+    rowKeys.forEach(k => {
+      const btn = document.createElement('button');
+      btn.className = 'wdl-key' + (k.length>1 ? ' wide' : '');
+      btn.textContent = k === 'BACK' ? '⌫' : (k === 'ENTER' ? 'Enter' : k);
+      btn.dataset.key = k;
+      btn.addEventListener('click', () => handleKey(k));
+      krow.appendChild(btn);
+      if (k.length===1) keyEls[k] = btn;
+    });
+    keyboard.appendChild(krow);
+  });
+
+  let toastTimer;
+  function toast(msg, ms=1700){
+    const t = document.getElementById('wdl-toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> t.classList.remove('show'), ms);
+  }
+
+  function scoreGuess(guess, answer){
+    const result = new Array(WORD_LEN).fill('absent');
+    const answerLetters = answer.split('');
+
+    for (let i=0; i<WORD_LEN; i++){
+      if (guess[i] === answer[i]){
+        result[i] = 'correct';
+        answerLetters[i] = null;
+      }
+    }
+    for (let i=0; i<WORD_LEN; i++){
+      if (result[i] === 'correct') continue;
+      const idx = answerLetters.indexOf(guess[i]);
+      if (idx !== -1){
+        result[i] = 'present';
+        answerLetters[idx] = null;
+      }
+    }
+    return result;
+  }
+
+  function render(){
+    state.guesses.forEach((g, r) => {
+      const scores = scoreGuess(g, ANSWER);
+      g.split('').forEach((letter, c) => {
+        const tile = rows[r][c];
+        tile.textContent = letter;
+        tile.classList.add('filled', scores[c]);
+        updateKey(letter, scores[c]);
+      });
+    });
+
+    const activeRow = state.guesses.length;
+    if (activeRow < MAX_GUESSES){
+      for (let c=0; c<WORD_LEN; c++){
+        rows[activeRow][c].textContent = state.current[c] || "";
+        rows[activeRow][c].classList.toggle('filled', !!state.current[c]);
+      }
+    }
+
+    if (state.status !== 'playing'){
+      showResult();
+    }
+  }
+
+  const KEY_RANK = { absent:0, present:1, correct:2 };
+  function updateKey(letter, scoreClass){
+    const el = keyEls[letter];
+    if (!el) return;
+    const current = el.dataset.score;
+    if (!current || KEY_RANK[scoreClass] > KEY_RANK[current]){
+      el.dataset.score = scoreClass;
+      el.classList.remove('absent','present','correct');
+      el.classList.add(scoreClass);
+    }
+  }
+
+  function handleKey(k){
+    if (state.status !== 'playing') return;
+
+    if (k === 'ENTER'){
+      submitGuess();
+      return;
+    }
+    if (k === 'BACK'){
+      state.current = state.current.slice(0, -1);
+      render(); saveState();
+      return;
+    }
+    if (/^[A-Z]$/.test(k) && state.current.length < WORD_LEN){
+      state.current += k;
+      render(); saveState();
+      const r = state.guesses.length, c = state.current.length - 1;
+      rows[r][c].classList.add('pop');
+      setTimeout(()=> rows[r][c].classList.remove('pop'), 120);
+    }
+  }
+
+  function submitGuess(){
+    if (state.current.length < WORD_LEN){
+      toast("Not enough letters");
+      shakeRow(state.guesses.length);
+      return;
+    }
+    const guess = state.current;
+    const r = state.guesses.length;
+
+    state.guesses.push(guess);
+    state.current = "";
+
+    rows[r].forEach((tile, c) => {
+      setTimeout(()=>{ tile.classList.add('flip'); }, c*80);
+    });
+
+    if (guess === ANSWER){
+      state.status = 'won';
+    } else if (state.guesses.length >= MAX_GUESSES){
+      state.status = 'lost';
+    }
+
+    saveState();
+    setTimeout(render, 480);
+  }
+
+  function shakeRow(r){
+    rows[r].forEach(t => {
+      t.classList.add('shake');
+      setTimeout(()=> t.classList.remove('shake'), 450);
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (!document.getElementById('tab-wordle').classList.contains('active')) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const key = e.key.toUpperCase();
+    if (key === 'ENTER') return handleKey('ENTER');
+    if (key === 'BACKSPACE') return handleKey('BACK');
+    if (/^[A-Z]$/.test(key)) return handleKey(key);
+  });
+
+  function showResult(){
+    const overlay = document.getElementById('wdl-resultOverlay');
+    const title = document.getElementById('wdl-resultTitle');
+    const sub = document.getElementById('wdl-resultSub');
+    const wordEl = document.getElementById('wdl-resultWord');
+
+    if (state.status === 'won'){
+      const tries = state.guesses.length;
+      const lines = ["Perfect!", "Brilliant!", "Lovely!", "Well guessed!", "Nicely done!", "Phew — got it!"];
+      title.textContent = lines[Math.min(tries, lines.length) - 1];
+      sub.textContent = "Solved in " + tries + " of " + MAX_GUESSES + " tries.";
+      wordEl.textContent = ANSWER;
+      spawnPetals();
+    } else {
+      title.textContent = "So close!";
+      sub.textContent = "Today's word was:";
+      wordEl.textContent = ANSWER;
+    }
+    overlay.classList.add('show');
+  }
+
+  document.querySelectorAll('[data-wdl-close]').forEach(el => {
+    el.addEventListener('click', () => {
+      document.getElementById(el.dataset.wdlClose).classList.remove('show');
+    });
+  });
+  document.querySelectorAll('.wdl-overlay').forEach(ov => {
+    ov.addEventListener('click', (e) => { if (e.target === ov) ov.classList.remove('show'); });
+  });
+  document.getElementById('wdl-helpBtn').addEventListener('click', () => {
+    document.getElementById('wdl-helpOverlay').classList.add('show');
+  });
+  document.getElementById('wdl-statsBtn').addEventListener('click', () => {
+    if (state.status === 'playing'){
+      toast("Finish today's word to see your result");
+    } else {
+      showResult();
+    }
+  });
+
+  document.getElementById('wdl-shareBtn').addEventListener('click', () => {
+    const emojiMap = { correct:'🟩', present:'🟨', absent:'⬜' };
+    const grid = state.guesses.map(g => scoreGuess(g, ANSWER).map(s => emojiMap[s]).join('')).join('\n');
+    const text = "Daily Wordle — " + dayName + "\n" + grid +
+      "\n" + (state.status === 'won' ? state.guesses.length + "/" + MAX_GUESSES : "X/" + MAX_GUESSES);
+
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(
+        () => toast("Copied to clipboard!"),
+        () => toast(text, 4000)
+      );
+    } else {
+      toast(text, 4000);
+    }
+  });
+
+  function spawnPetals(){
+    const count = 26;
+    const symbols = ['🌸','🤍','🌿'];
+    for (let i=0; i<count; i++){
+      const p = document.createElement('div');
+      p.className = 'wdl-petal';
+      p.textContent = symbols[Math.floor(Math.random()*symbols.length)];
+      p.style.left = Math.random()*100 + 'vw';
+      p.style.animationDuration = (3 + Math.random()*2.5) + 's';
+      p.style.animationDelay = (Math.random()*1.2) + 's';
+      p.style.fontSize = (14 + Math.random()*12) + 'px';
+      document.body.appendChild(p);
+      setTimeout(()=> p.remove(), 7000);
+    }
+  }
+
+  render();
+  if (state.status !== 'playing'){
+    setTimeout(showResult, 250);
+  }
+
+})();
 </script>
 </body>
 </html>
