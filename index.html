@@ -215,6 +215,111 @@
     .site-header { padding: 32px 8px 24px; }
   }
 
+  /* ====================== Bingo ====================== */
+  .bingo-wrap { width: 100%; max-width: 560px; display: flex; flex-direction: column; align-items: center; }
+  .bingo-intro {
+    background: var(--warm-white);
+    border-radius: 18px;
+    border: 0.5px solid var(--border-strong);
+    box-shadow: 0 2px 16px rgba(74,107,78,0.06);
+    padding: 20px 22px;
+    margin-bottom: 16px;
+    width: 100%;
+    text-align: center;
+  }
+  .bingo-intro .bingo-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--sage); margin-bottom: 4px; }
+  .bingo-intro h2 { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 500; color: var(--sage-dark); letter-spacing: 0.02em; margin-bottom: 10px; }
+  .bingo-intro p { font-size: 13px; color: var(--ink); line-height: 1.65; font-weight: 300; margin-bottom: 8px; }
+  .bingo-intro p:last-child { margin-bottom: 0; }
+  .bingo-intro strong { font-weight: 500; color: var(--sage-dark); }
+
+  .bingo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    width: 100%;
+    max-width: 560px;
+    margin-bottom: 16px;
+  }
+  .bingo-cell {
+    background: var(--warm-white);
+    border: 0.5px solid var(--border-strong);
+    border-radius: 12px;
+    padding: 10px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 7px;
+    cursor: pointer;
+    min-height: 88px;
+    box-shadow: 0 2px 8px rgba(74,107,78,0.05);
+    transition: background 0.2s, border-color 0.2s, transform 0.1s;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    position: relative;
+  }
+  .bingo-cell:active { transform: scale(0.97); }
+  .bingo-cell.checked {
+    background: var(--sage-dark);
+    border-color: var(--sage-dark);
+  }
+  .bingo-cell.free {
+    background: var(--sage-light);
+    border-color: var(--sage);
+  }
+  .bingo-cell.free.checked {
+    background: var(--sage-dark);
+    border-color: var(--sage-dark);
+  }
+  .bingo-cell svg { width: 32px; height: 32px; flex-shrink: 0; transition: stroke 0.2s, fill 0.2s; }
+  .bingo-cell .bingo-label {
+    font-size: 9.5px;
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--sage-dark);
+    transition: color 0.2s;
+  }
+  .bingo-cell.checked .bingo-label { color: #fff; }
+  .bingo-cell.checked svg { stroke: #fff; }
+  .bingo-cell.free .bingo-label { color: var(--sage-dark); }
+  .bingo-cell .bingo-check {
+    position: absolute;
+    top: 6px; right: 7px;
+    font-size: 13px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .bingo-cell.checked .bingo-check { opacity: 1; }
+  .bingo-cell.free .bingo-label { font-size: 11px; font-family: 'Cormorant Garamond', serif; font-style: italic; letter-spacing: 0.04em; text-transform: none; }
+
+  .bingo-progress {
+    width: 100%;
+    max-width: 560px;
+    background: var(--warm-white);
+    border: 0.5px solid var(--border-strong);
+    border-radius: 14px;
+    padding: 14px 18px;
+    box-shadow: 0 2px 8px rgba(74,107,78,0.05);
+    margin-bottom: 16px;
+  }
+  .bingo-progress-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .bingo-progress-label { font-size: 12px; font-weight: 500; color: var(--sage-dark); }
+  .bingo-progress-count { font-size: 12px; color: var(--muted); }
+  .bingo-bar-track { height: 6px; background: var(--sage-light); border-radius: 99px; overflow: hidden; }
+  .bingo-bar-fill { height: 100%; background: var(--sage); border-radius: 99px; transition: width 0.4s ease; }
+  .bingo-win-msg { margin-top: 10px; font-size: 13px; color: var(--sage-dark); text-align: center; font-weight: 500; display: none; }
+  .bingo-win-msg.show { display: block; }
+
+  @media (max-width: 480px) {
+    .bingo-cell { min-height: 80px; padding: 8px 4px; gap: 5px; }
+    .bingo-cell svg { width: 28px; height: 28px; }
+    .bingo-cell .bingo-label { font-size: 8.5px; }
+  }
+
   /* ====================== Daily Wordle ====================== */
   :root {
     --wdl-gold: #c9a45c;
@@ -402,6 +507,7 @@
     <button class="tab-btn active" id="tab-btn-weekend" onclick="showTab('weekend')">The Weekend</button>
     <button class="tab-btn" id="tab-btn-things" onclick="showTab('things')">Things to Do</button>
     <button class="tab-btn" id="tab-btn-goodtoknow" onclick="showTab('goodtoknow')">Good to Know</button>
+    <button class="tab-btn" id="tab-btn-bingo" onclick="showTab('bingo')">Bingo</button>
     <button class="tab-btn" id="tab-btn-wordle" onclick="showTab('wordle')">Daily Wordle</button>
   </nav>
 
@@ -628,13 +734,238 @@
         <div class="event-top"><div class="event-name">Space for Babies &amp; Nursing Mothers</div></div>
         <div class="event-desc">There will be a quiet, dedicated space available for babies and nursing mothers at both the Friday Welcome Event and the Saturday Ceremony &amp; Reception.</div>
       </div>
-      <div class="event-block" style="border-bottom:none">
-        <div class="event-top"><div class="event-name">Sunday Checkout &amp; Luggage</div></div>
-        <div class="event-desc">[placeholder - pending request for group late check-out.</div>
-      </div>
     </div>
   </div>
 
+  </div>
+
+  <div class="tab-panel" id="tab-bingo">
+  <div class="bingo-wrap">
+
+    <div class="bingo-intro">
+      <p class="bingo-eyebrow">Welcome to Seattle</p>
+      <h2>Photo Bingo</h2>
+      <p>Between dinners, drinks, and dance breaks, go fall a little in love with Seattle.</p>
+      <p>Snap a selfie at <strong>all 15 squares</strong> (the free space is yours to keep!) and find Varsha or Mat before Sunday brunch to claim your prize.</p>
+      <p><strong>First 30 guests to complete the card win — but you'll have to find us to find out what it is! 🐱</strong></p>
+      <p style="margin-top:8px; font-size:12px; color:var(--muted);">Tap each square when you've got the selfie!</p>
+    </div>
+
+    <div class="bingo-progress">
+      <div class="bingo-progress-top">
+        <span class="bingo-progress-label">Your progress</span>
+        <span class="bingo-progress-count" id="bingo-count">0 / 15</span>
+      </div>
+      <div class="bingo-bar-track"><div class="bingo-bar-fill" id="bingo-bar" style="width:0%"></div></div>
+      <div class="bingo-win-msg" id="bingo-win-msg">🎉 You did it! Find Varsha or Mat to claim your prize!</div>
+    </div>
+
+    <div class="bingo-grid" id="bingo-grid">
+
+      <!-- 0: Pig (Rachel the piggy bank) -->
+      <div class="bingo-cell" data-id="0" onclick="toggleBingo(this)">
+        <span class="bingo-check">✓</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--sage-dark)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2V5z"/>
+          <path d="M2 9v1c0 1.1.9 2 2 2h1"/>
+          <path d="M16 11h.01"/>
+        </svg>
+        <span class="bingo-label">Pike Place's "Rachel" — Big Bronze Piggy Bank</span>
+      </div>
+
+      <!-- 1: Coffee cup (Starbucks sign) -->
+      <div class="bingo-cell" data-id="1" onclick="toggleBingo(this)">
+        <span class="bingo-check">✓</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--sage-dark)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 8h1a4 4 0 0 1 0 8h-1"/>
+          <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V8z"/>
+          <line x1="6" y1="2" x2="6" y2="4"/>
+          <line x1="10" y1="2" x2="10" y2="4"/>
+          <line x1="14" y1="2" x2="14" y2="4"/>
+        </svg>
+        <span class="bingo-label">The Original 1912 Starbucks Sign</span>
+      </div>
+
+      <!-- 2: Ferry boat -->
+      <div class="bingo-cell" data-id="2" onclick="toggleBingo(this)">
+        <span class="bingo-check">✓</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--sage-dark)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1 .6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/>
+          <path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76"/>
+          <path d="M19 13V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6"/>
+          <path d="M12 5v4"/>
+          <path d="M8 5v4"/>
+          <path d="M16 5v4"/>
+        </svg>
+        <span class="bingo-label">A Ferry Crossing Elliott Bay</span>
+      </div>
+
+      <!-- 3: Ferris Wheel -->
+      <div class="bingo-cell" data-id="3" onclick="toggleBingo(this)">
+        <span class="bingo-check">✓</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--sage-dark)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="2"/>
+          <circle cx="12" cy="12" r="8"/>
+          <path d="M12 4v4M12 16v4M4 12h4M16 12h4"/>
+          <path d="M6.34 6.34l2.83 2.83M14.83 14.83l2.83 2.83M17.66 6.34l-2.83 2.83M9.17 14.83l-2.83 2.83"/>
+          <rect x="10" y="2" width="4" height="3" rx="1"/>
+          <rect x="18" y="10" width="4" height="4" rx="1"/>
+          <rect x="10" y="19" width="4" height="3" rx="1"/>
+          <rect x="2" y="10" width="4" height="4" rx="1"/>
+        </svg>
+        <span class="bingo-label">The Seattle Great Wheel</span>
+      </div>
+
+      <!-- 4: Guitar (musician) -->
+      <div class="bingo-cell" data-id="4" onclick="toggleBingo(this)">
+        <span class="bingo-check">✓</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--sage-dark)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 18V5l12-2v13"/>
+          <circle cx="6" cy="18" r="3"/>
+          <circle cx="18" cy="16" r="3"/>
+        </svg>
+        <span class="bingo-label">A Street Performer or Musician</span>
+      </div>
+
+      <!-- 5: Space Needle -->
+      <div class="bingo-cell" data-id="5" onclick="toggleBingo(this)">
+        <span class="bingo-check">✓</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--sage-dark)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2v2.5"/>
+          <ellipse cx="12" cy="6.5" rx="5.5" ry="1.8"/>
+          <path d="M9.8 8.2C10.8 12 10.3 16.5 7.5 21"/>
+          <path d="M14.2 8.2C13.2 12 13.7 16.5 16.5 21"/>
+          <path d="M12 8.3V21"/>
+          <path d="M6 21h12"/>
+        </svg>
+        <span class="bingo-label">The Space Needle</span>
+      </div>
+
+      <!-- 6: Hammering Man (figure with hammer) -->
+      <div class="bingo-cell" data-id="6" onclick="toggleBingo(this)">
+        <span class="bingo-check">✓</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--sage-dark)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m15 12-8.373 8.373a1 1 0 1 1-3-3L12 9"/>
+          <path d="m18 15 4-4"/>
+          <path d="m21.5 11.5-1.914-1.914A2 2 0 0 1 19 8.172V7l-2.26-2.26a6 6 0 0 0-4.202-1.756L9 2.96l.92.82A6.18 6.18 0 0 1 12 8.4V10l2 2h1.172a2 2 0 0 1 1.414.586L18.5 14.5"/>
+        </svg>
+        <span class="bingo-label">The "Hammering Man" Outside the Seattle Art Museum</span>
+      </div>
+
+      <!-- 7: Free Space (champagne glasses) -->
+      <div class="bingo-cell free checked" data-id="7" onclick="toggleBingo(this)">
+        <span class="bingo-check">✓</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5.8 11.3 2 22l10.7-3.79"/>
+          <path d="M4 3h.01"/>
+          <path d="M22 8h.01"/>
+          <path d="M15 2h.01"/>
+          <path d="M22 20h.01"/>
+          <path d="m22 2-2.24.75a2.9 2.9 0 0 0-1.96 3.12c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10"/>
+          <path d="m22 13-.82-.33c-.86-.34-1.82.2-1.98 1.11c-.11.7-.72 1.22-1.43 1.22H17"/>
+          <path d="m11 2 .33.82c.34.86-.2 1.82-1.11 1.98C9.52 4.9 9 5.52 9 6.23V7"/>
+          <path d="M11 13c1.93 1.93 2.83 4.17 2 5-.83.83-3.07-.07-5-2-1.93-1.93-2.83-4.17-2-5 .83-.83 3.07.07 5 2Z"/>
+        </svg>
+        <span class="bingo-label" style="color:#fff;">Free Space!</span>
+      </div>
+
+      <!-- 8: Lenin statue (raised fist) -->
+      <div class="bingo-cell" data-id="8" onclick="toggleBingo(this)">
+        <span class="bingo-check">✓</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--sage-dark)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/>
+          <path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2"/>
+          <path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8"/>
+          <path d="M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>
+        </svg>
+        <span class="bingo-label">The Lenin Statue in Fremont</span>
+      </div>
+
+      <!-- 9: Mountain (Mount Rainier) -->
+      <div class="bingo-cell" data-id="9" onclick="toggleBingo(this)">
+        <span class="bingo-check">✓</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--sage-dark)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m8 3 4 8 5-5 5 15H2L8 3z"/>
+          <path d="M4.14 15.08c2.62-1.57 5.24-1.43 7.86.42 2.74 1.94 5.49 2 8.23.19"/>
+        </svg>
+        <span class="bingo-label">A View of Mount Rainier</span>
+      </div>
+
+      <!-- 10: Gum Wall (brick wall) -->
+      <div class="bingo-cell" data-id="10" onclick="toggleBingo(this)">
+        <span class="bingo-check">✓</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--sage-dark)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="4" rx="0.5"/>
+          <rect x="2" y="12" width="20" height="4" rx="0.5"/>
+          <rect x="2" y="20" width="20" height="4" rx="0.5"/>
+          <path d="M2 8h20M2 16h20"/>
+          <path d="M7 4v4M14 4v4M4 12v4M11 12v4M18 12v4M7 20v4M14 20v4"/>
+          <circle cx="9" cy="10" r="1.2" fill="var(--sage-dark)" opacity="0.5" stroke="none"/>
+          <circle cx="15" cy="10" r="1" fill="var(--sage-dark)" opacity="0.5" stroke="none"/>
+          <circle cx="6" cy="18" r="1.2" fill="var(--sage-dark)" opacity="0.5" stroke="none"/>
+          <circle cx="13" cy="18" r="1" fill="var(--sage-dark)" opacity="0.5" stroke="none"/>
+          <circle cx="19" cy="18" r="1.2" fill="var(--sage-dark)" opacity="0.5" stroke="none"/>
+        </svg>
+        <span class="bingo-label">The Gum Wall</span>
+      </div>
+
+      <!-- 11: Burger (Dick's) -->
+      <div class="bingo-cell" data-id="11" onclick="toggleBingo(this)">
+        <span class="bingo-check">✓</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--sage-dark)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 15h16a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/>
+          <path d="M12 4c3.783 0 6.953 2.133 7.786 5H4.214C5.047 6.133 8.217 4 12 4z"/>
+          <path d="M5 12l2-1 2 1 2-1 2 1 2-1 2 1"/>
+        </svg>
+        <span class="bingo-label">A Dick's Burger or Fries</span>
+      </div>
+
+      <!-- 12: Seaplane -->
+      <div class="bingo-cell" data-id="12" onclick="toggleBingo(this)">
+        <span class="bingo-check">✓</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--sage-dark)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 2c-2-2-4-2-5.5-.5L10 5 1.8 6.2l5 5L4 14l2 2 3.2-1.5 5 5 2.6-1.3z"/>
+        </svg>
+        <span class="bingo-label">A Seaplane in the Sky or Floating on Lake Union</span>
+      </div>
+
+      <!-- 13: Fremont Troll (monster/troll face) -->
+      <div class="bingo-cell" data-id="13" onclick="toggleBingo(this)">
+        <span class="bingo-check">✓</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--sage-dark)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 12 C2 7 6.5 3 12 3 C17.5 3 22 7 22 12"/>
+          <path d="M2 12 L2 22 L22 22 L22 12"/>
+          <path d="M2 22 L22 22"/>
+          <ellipse cx="12" cy="17" rx="6" ry="5"/>
+          <circle cx="9.5" cy="15.5" r="1.5" fill="var(--sage-dark)" stroke="none" opacity="0.7"/>
+          <circle cx="14.5" cy="15.5" r="1.5" fill="var(--sage-dark)" stroke="none" opacity="0.7"/>
+          <path d="M9 20 Q12 22 15 20"/>
+          <path d="M7.5 14 Q6 13 7 12"/>
+          <path d="M16.5 14 Q18 13 17 12"/>
+        </svg>
+        <span class="bingo-label">The "Fremont Troll" Under the Aurora Bridge</span>
+      </div>
+
+      <!-- 14: Piroshky (pastry/dumpling) -->
+      <div class="bingo-cell" data-id="14" onclick="toggleBingo(this)">
+        <span class="bingo-check">✓</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--sage-dark)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m4.6 13.11 5.79-3.21c1.89-1.05 4.79 1.78 3.71 3.71l-3.22 5.81C8.8 23.16.79 15.23 4.6 13.11Z"/>
+          <path d="m10.5 9.5-1-2.29C9.2 6.48 8.8 6 8 6H4.5C2.79 6 2 6.5 2 8.5a7.71 7.71 0 0 0 2 4.83"/>
+          <path d="M8 6c0-1.55.24-4-2-4-2 0-2.5 2.17-2.5 4"/>
+          <path d="m14.5 13.5 2.29 1c.73.3 1.21.7 1.21 1.5v3.5c0 1.71-.5 2.5-2.5 2.5a7.71 7.71 0 0 1-4.83-2"/>
+          <path d="M18 16c1.55 0 4-.24 4 2 0 2-2.17 2.5-4 2.5"/>
+        </svg>
+        <span class="bingo-label">Piroshky Piroshky Bakery Line on Pike Place</span>
+      </div>
+
+    </div>
+
+    <p style="font-size:11.5px; color:var(--muted); font-weight:300; text-align:center; max-width:400px; padding: 0 16px; line-height:1.6;">
+      💡 The waterfront boardwalk is your best friend — you can spot Mount Rainier AND a ferry crossing Elliott Bay from the same spot. One trip to Fremont checks off more than you think. Saturday morning is your best window — ceremony starts at 3 PM!
+    </p>
+
+  </div>
   </div>
 
   <div class="tab-panel" id="tab-wordle">
@@ -696,16 +1027,72 @@ function showTab(name) {
   document.getElementById('tab-weekend').classList.toggle('active', name === 'weekend');
   document.getElementById('tab-things').classList.toggle('active', name === 'things');
   document.getElementById('tab-goodtoknow').classList.toggle('active', name === 'goodtoknow');
+  document.getElementById('tab-bingo').classList.toggle('active', name === 'bingo');
   document.getElementById('tab-wordle').classList.toggle('active', name === 'wordle');
   document.getElementById('tab-btn-weekend').classList.toggle('active', name === 'weekend');
   document.getElementById('tab-btn-things').classList.toggle('active', name === 'things');
   document.getElementById('tab-btn-goodtoknow').classList.toggle('active', name === 'goodtoknow');
+  document.getElementById('tab-btn-bingo').classList.toggle('active', name === 'bingo');
   document.getElementById('tab-btn-wordle').classList.toggle('active', name === 'wordle');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }function jumpTo(id) {
   const el = document.getElementById(id);
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+
+// ====================== Bingo Logic ======================
+(function() {
+  const TOTAL = 15;
+  const FREE_ID = 7;
+  const storageKey = 'vm_bingo_checked';
+
+  function loadState() {
+    try { return JSON.parse(localStorage.getItem(storageKey)) || [FREE_ID]; }
+    catch(e) { return [FREE_ID]; }
+  }
+  function saveState(checked) {
+    try { localStorage.setItem(storageKey, JSON.stringify(checked)); } catch(e) {}
+  }
+
+  function updateProgress(checked) {
+    const count = checked.length;
+    document.getElementById('bingo-count').textContent = count + ' / ' + TOTAL;
+    document.getElementById('bingo-bar').style.width = (count / TOTAL * 100) + '%';
+    const win = document.getElementById('bingo-win-msg');
+    if (count >= TOTAL) { win.classList.add('show'); }
+    else { win.classList.remove('show'); }
+  }
+
+  function applyState(checked) {
+    document.querySelectorAll('.bingo-cell').forEach(cell => {
+      const id = parseInt(cell.dataset.id);
+      if (checked.includes(id)) {
+        cell.classList.add('checked');
+        if (id === FREE_ID) cell.style.background = 'var(--sage-dark)';
+      } else {
+        cell.classList.remove('checked');
+        if (id === FREE_ID) cell.style.background = '';
+      }
+    });
+    updateProgress(checked);
+  }
+
+  window.toggleBingo = function(cell) {
+    const id = parseInt(cell.dataset.id);
+    if (id === FREE_ID) return; // free space always checked
+    let checked = loadState();
+    if (checked.includes(id)) {
+      checked = checked.filter(i => i !== id);
+    } else {
+      checked.push(id);
+    }
+    saveState(checked);
+    applyState(checked);
+  };
+
+  // init on load
+  applyState(loadState());
+})();
 </script>
 
 <script>
@@ -727,7 +1114,7 @@ function showTab(name) {
    ============================================================ */
 
 const WDL_WORDS_BY_DATE = {
-  "2026-07-17": "HAPPY",   // Varsha's Bday!
+  "2026-07-16": "HAPPY",   // Varsha's Bday!
   "2026-07-17": "BLOOM",   // 2 weeks out - countdown begins
   "2026-07-18": "GUEST",
   "2026-07-19": "PETAL",
@@ -751,7 +1138,7 @@ const WDL_DEFAULT_WORD = "UNION";
 
 // Optional: friendly names for each date, shown above the board.
 const WDL_DAY_NAMES = {
-  "2026-07-17": "Happy Birthday, Varsha!",
+  "2026-07-16": "Happy Birthday, Varsha!",
   "2026-07-17": "2 Weeks to Go",
   "2026-07-18": "13 Days to Go",
   "2026-07-19": "12 Days to Go",
